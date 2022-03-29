@@ -1,5 +1,6 @@
 package com.musala.drone_management.controller;
 
+import com.musala.drone_management.dto.RegisterDroneRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import java.util.List;
 public class DispatchController {
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerDrone(@Valid @RequestBody String payload) {
+    public ResponseEntity<String> registerDrone(@Valid @RequestBody RegisterDroneRequest droneRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body("registered drone");
     }
 
