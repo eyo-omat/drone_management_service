@@ -23,4 +23,7 @@ public class DroneManagerService {
         droneRepository.save(drone);
     }
 
+    public Drone fetchDroneBattery(long droneId) {
+        return droneRepository.findById(droneId).get();
+    }
 }

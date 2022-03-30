@@ -1,6 +1,7 @@
 package com.musala.drone_management.controller;
 
 import com.musala.drone_management.dto.RegisterDroneRequest;
+import com.musala.drone_management.model.Drone;
 import com.musala.drone_management.service.DroneManagerService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,8 @@ public class DispatchController {
     }
 
     @GetMapping("/battery/{droneId}")
-    public ResponseEntity<String> fetchDroneBattery(@PathVariable long droneId) {
-        return ResponseEntity.status(HttpStatus.OK).body("Drone percentage");
+    public ResponseEntity<Drone> fetchDroneBattery(@PathVariable long droneId) {
+        Drone droneResponse = managerService.fetchDroneBattery(droneId);
+        return ResponseEntity.status(HttpStatus.OK).body(droneResponse);
     }
 }
