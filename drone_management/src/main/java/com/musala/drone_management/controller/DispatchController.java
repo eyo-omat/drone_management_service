@@ -24,9 +24,9 @@ public class DispatchController {
     DroneManagerService managerService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerDrone(@Valid @RequestBody RegisterDroneRequest droneRequest) {
-        managerService.registerDrone(droneRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body("registered drone");
+    public ResponseEntity<Drone> registerDrone(@Valid @RequestBody RegisterDroneRequest droneRequest) {
+        Drone drone = managerService.registerDrone(droneRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(drone);
     }
 
     @PostMapping("/load")

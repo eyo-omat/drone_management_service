@@ -17,7 +17,12 @@ import java.util.List;
 public class DroneContent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(
+            name = "drone_content_sequence",
+            sequenceName = "drone_content_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "drone_content_sequence")
     private Long droneContentId;
 
     @OneToOne()
@@ -25,7 +30,7 @@ public class DroneContent {
     private Drone drone;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "medicationId")
+    @JoinColumn(name = "droneContentId")
     @ToString.Exclude
     private List<Medication> medications;
 }

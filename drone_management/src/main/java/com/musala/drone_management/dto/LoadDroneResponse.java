@@ -15,6 +15,7 @@ import java.util.List;
 public class LoadDroneResponse {
 
     private Long droneId;
+    private Double droneCurrentWeight;
     private Double droneWeightLimit;
     private Double droneBatteryCapacity;
     private List<Medication> medicationRequests;

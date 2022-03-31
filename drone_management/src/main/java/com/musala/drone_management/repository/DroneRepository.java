@@ -14,4 +14,6 @@ public interface DroneRepository extends JpaRepository<Drone, Long> {
             @Param("droneId") long droneId,
             @Param("states") List<String> states
     );
+
+    List<Drone> findDronesByStateIn(List<String> states);
 }

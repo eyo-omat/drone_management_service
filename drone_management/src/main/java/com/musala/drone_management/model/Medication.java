@@ -17,7 +17,12 @@ import javax.validation.constraints.Pattern;
 public class Medication {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(
+            name = "medication_sequence",
+            sequenceName = "medication_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medication_sequence")
     private Long medicationId;
 
     @Pattern(regexp = "([A-Za-z0-9\\-_]+)")

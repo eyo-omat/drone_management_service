@@ -23,7 +23,7 @@ public class DroneManagerService {
     @NonNull
     DroneContentRepository droneContentRepository;
 
-    public void registerDrone(RegisterDroneRequest droneRequest) {
+    public Drone registerDrone(RegisterDroneRequest droneRequest) {
         Drone drone = new Drone();
         drone.setSerial(droneRequest.getSerial());
         drone.setModel(droneRequest.getModel());
@@ -32,6 +32,8 @@ public class DroneManagerService {
         drone.setBatteryCapacity(droneRequest.getBatteryCapacity());
         drone.setState(droneRequest.getState());
         droneRepository.save(drone);
+
+        return drone;
     }
 
     public LoadDroneResponse loadDrone(LoadDroneRequest loadDroneRequest) {
@@ -61,11 +63,13 @@ public class DroneManagerService {
 
         //update drone state after loading
         double newDroneWeight = totalLoadWeight + drone.getCurrentWeight();
+        drone.setCurrentWeight(newDroneWeight);
         drone.setState(newDroneWeight == drone.getWeightLimit() ? StateEnum.LOADED.name() : StateEnum.LOADING.name());
         droneRepository.save(drone);
 
         return LoadDroneResponse.builder()
                 .droneId(drone.getDroneId())
+                .droneCurrentWeight(newDroneWeight)
                 .droneWeightLimit(drone.getWeightLimit())
                 .droneBatteryCapacity(drone.getBatteryCapacity())
                 .medicationRequests(droneContent.getMedications())
@@ -95,9 +99,10 @@ public class DroneManagerService {
     }
 
     public List<Drone> fetchAvailableDronesForLoading() {
-        return droneRepository.findAll().stream()
-                .filter(drone -> drone.getState().equals(StateEnum.IDLE.name()))
-                .filter(drone -> drone.getState().equals(StateEnum.LOADING.name()))
+        return droneRepository.findDronesByStateIn(
+                List.of(StateEnum.IDLE.name(), StateEnum.LOADING.name())
+                ).stream()
+                .filter(drone -> drone.getCurrentWeight() < drone.getWeightLimit())
                 .collect(Collectors.toList());
     }
 }

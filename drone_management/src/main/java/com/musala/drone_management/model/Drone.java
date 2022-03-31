@@ -12,12 +12,17 @@ import javax.persistence.*;
 @Setter
 @Getter
 @ToString
-@Table(name = "drone")
+@Table(name = "tbl_drone")
 @NoArgsConstructor
 public class Drone {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(
+            name = "drone_sequence",
+            sequenceName = "drone_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "drone_sequence")
     Long droneId;
 
     String serial;
