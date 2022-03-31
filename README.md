@@ -3,10 +3,15 @@
 A drone management service
 ---
 
+# Start up
+Run the below command to start up the project
+
+`mvn spring-boot:run`
+
 # The Service JSON REST APIs:
 > Register a drone;
    
-**Endpoint** POST http://localhost:8080/api/drone-manager/register
+**Endpoint** POST http://localhost:8878/api/drone-manager/register
 
 **Sample Request**
 `{
