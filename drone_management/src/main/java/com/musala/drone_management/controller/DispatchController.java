@@ -36,14 +36,15 @@ public class DispatchController {
     }
 
     @GetMapping("/contents/{droneId}")
-    public ResponseEntity<List<String>> fetchDroneContents(@Valid @PathVariable long droneId) {
+    public ResponseEntity<List<DroneContentResponse>> fetchDroneContents(@Valid @PathVariable long droneId) {
         List<DroneContentResponse> droneContents = managerService.fetchDroneContents(droneId);
-        return ResponseEntity.status(HttpStatus.OK).body(List.of("medication1", "medication2"));
+        return ResponseEntity.status(HttpStatus.OK).body(droneContents);
     }
 
     @GetMapping("/available-drones")
-    public ResponseEntity<List<String>> fetchAvailableDrones() {
-        return ResponseEntity.status(HttpStatus.OK).body(List.of("drones", "drones"));
+    public ResponseEntity<List<Drone>> fetchAvailableDrones() {
+        List<Drone> availableDrones = managerService.fetchAvailableDronesForLoading();
+        return ResponseEntity.status(HttpStatus.OK).body(availableDrones);
     }
 
     @GetMapping("/battery/{droneId}")

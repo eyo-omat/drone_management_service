@@ -93,4 +93,11 @@ public class DroneManagerService {
                         .medications(droneContent.getMedications())
                         .build()).collect(Collectors.toList());
     }
+
+    public List<Drone> fetchAvailableDronesForLoading() {
+        return droneRepository.findAll().stream()
+                .filter(drone -> drone.getState().equals(StateEnum.IDLE.name()))
+                .filter(drone -> drone.getState().equals(StateEnum.LOADING.name()))
+                .collect(Collectors.toList());
+    }
 }
