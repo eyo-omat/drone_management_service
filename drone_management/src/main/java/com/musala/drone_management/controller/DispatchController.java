@@ -1,5 +1,7 @@
 package com.musala.drone_management.controller;
 
+import com.musala.drone_management.dto.LoadDroneRequest;
+import com.musala.drone_management.dto.LoadDroneResponse;
 import com.musala.drone_management.dto.RegisterDroneRequest;
 import com.musala.drone_management.model.Drone;
 import com.musala.drone_management.service.DroneManagerService;
@@ -27,8 +29,9 @@ public class DispatchController {
     }
 
     @PostMapping("/load")
-    public ResponseEntity<String> loadDrone(@Valid @RequestBody String payload) {
-        return ResponseEntity.status(HttpStatus.OK).body("Drone loaded");
+    public ResponseEntity<LoadDroneResponse> loadDrone(@Valid @RequestBody LoadDroneRequest loadDroneRequest) {
+        LoadDroneResponse loadDroneResponse = managerService.loadDrone(loadDroneRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(loadDroneResponse);
     }
 
     @GetMapping("/contents/{droneId}")

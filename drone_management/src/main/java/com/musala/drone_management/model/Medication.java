@@ -6,12 +6,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 @Setter
 @Getter
 @ToString
 @Entity
-@Table(name = "tbl_employee")
+@Table(name = "tbl_medication")
 @NoArgsConstructor
 public class Medication {
 
@@ -19,8 +20,11 @@ public class Medication {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long medicationId;
 
-    private String name; // (allowed only letters, numbers, ‘-‘, ‘_’);
+    @Pattern(regexp = "([A-Za-z0-9\\-_]+)")
+    private String name;
     private Double weight;
-    private String code; //(allowed only upper case letters, underscore and numbers);
-    private String image; // (picture of the medication case).
+
+    @Pattern(regexp = "([A-Z0-9_]+)")
+    private String code;
+    private String image;
 }
