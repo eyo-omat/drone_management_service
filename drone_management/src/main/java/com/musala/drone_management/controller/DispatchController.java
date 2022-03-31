@@ -1,5 +1,6 @@
 package com.musala.drone_management.controller;
 
+import com.musala.drone_management.dto.DroneContentResponse;
 import com.musala.drone_management.dto.LoadDroneRequest;
 import com.musala.drone_management.dto.LoadDroneResponse;
 import com.musala.drone_management.dto.RegisterDroneRequest;
@@ -36,6 +37,7 @@ public class DispatchController {
 
     @GetMapping("/contents/{droneId}")
     public ResponseEntity<List<String>> fetchDroneContents(@Valid @PathVariable long droneId) {
+        List<DroneContentResponse> droneContents = managerService.fetchDroneContents(droneId);
         return ResponseEntity.status(HttpStatus.OK).body(List.of("medication1", "medication2"));
     }
 

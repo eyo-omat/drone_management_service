@@ -24,6 +24,8 @@ public class Drone {
 
     String model;
 
+    Double currentWeight;
+
     Double weightLimit;
 
     Double batteryCapacity;

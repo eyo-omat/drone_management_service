@@ -1,9 +1,6 @@
 package com.musala.drone_management.service;
 
-import com.musala.drone_management.dto.LoadDroneRequest;
-import com.musala.drone_management.dto.LoadDroneResponse;
-import com.musala.drone_management.dto.RegisterDroneRequest;
-import com.musala.drone_management.dto.StateEnum;
+import com.musala.drone_management.dto.*;
 import com.musala.drone_management.model.Drone;
 import com.musala.drone_management.model.DroneContent;
 import com.musala.drone_management.model.Medication;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +27,7 @@ public class DroneManagerService {
         Drone drone = new Drone();
         drone.setSerial(droneRequest.getSerial());
         drone.setModel(droneRequest.getModel());
+        drone.setCurrentWeight(0.0);
         drone.setWeightLimit(droneRequest.getWeightLimit());
         drone.setBatteryCapacity(droneRequest.getBatteryCapacity());
         drone.setState(droneRequest.getState());
@@ -37,7 +36,7 @@ public class DroneManagerService {
 
     public LoadDroneResponse loadDrone(LoadDroneRequest loadDroneRequest) {
         // Fetch drone to be loaded
-        Drone drone = droneRepository.findDroneByDroneIdAndStateIn(
+        Drone drone = droneRepository.findDroneByDroneIdAndCurrentWeightLessThanWeightLimitAndStateIn(
                 loadDroneRequest.getDroneId(),
                 List.of(StateEnum.IDLE.name(), StateEnum.LOADING.name())
         );
@@ -50,7 +49,7 @@ public class DroneManagerService {
                 .mapToDouble(Medication::getWeight)
                 .sum();
 
-        if (totalLoadWeight > drone.getWeightLimit()) {
+        if ((totalLoadWeight + drone.getCurrentWeight()) > drone.getWeightLimit()) {
             throw new RuntimeException("Drone is beyond capacity");
         }
 
@@ -60,6 +59,10 @@ public class DroneManagerService {
 
         droneContentRepository.save(droneContent);
 
+        //update drone state after loading
+        double newDroneWeight = totalLoadWeight + drone.getCurrentWeight();
+        drone.setState(newDroneWeight == drone.getWeightLimit() ? StateEnum.LOADED.name() : StateEnum.LOADING.name());
+        droneRepository.save(drone);
 
         return LoadDroneResponse.builder()
                 .droneId(drone.getDroneId())
@@ -76,5 +79,18 @@ public class DroneManagerService {
         }
 
         return droneOptional.get();
+    }
+
+    public List<DroneContentResponse> fetchDroneContents(long droneId) {
+        droneRepository.findById(droneId).orElseThrow(
+                () -> new RuntimeException("Drone with droneId: " + droneId + " not found")
+        );
+
+        return droneContentRepository.findDroneContentByDrone_DroneId(droneId).stream()
+                .map(droneContent -> DroneContentResponse.builder()
+                        .droneId(droneContent.getDrone().getDroneId())
+                        .currentWeight(droneContent.getDrone().getCurrentWeight())
+                        .medications(droneContent.getMedications())
+                        .build()).collect(Collectors.toList());
     }
 }
